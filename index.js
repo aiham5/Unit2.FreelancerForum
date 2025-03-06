@@ -1,63 +1,55 @@
-// Array of possible names and occupations
-const names = ["Alice", "Bob", "Carol", "David", "Eva"];
-const occupations = ["Writer", "Teacher", "Programmer", "Designer", "Artist"];
-
-// Initial freelancers array
 let freelancers = [
-  { name: "Alice", occupation: "Writer", startingPrice: 30 },
-  { name: "Bob", occupation: "Teacher", startingPrice: 50 },
+  { name: "Alice", occupation: "Writer", price: 30 },
+  { name: "Bob", occupation: "Teacher", price: 50 },
 ];
 
-// Function to render the freelancer list on the page
+const names = ["Carol", "Dave", "Eve", "Frank", "Grace", "Hank"];
+const occupations = [
+  "Designer",
+  "Programmer",
+  "Artist",
+  "Consultant",
+  "Engineer",
+];
+
 function renderFreelancers() {
-  const freelancersList = document.getElementById("freelancers-list");
-  freelancersList.innerHTML = ""; // Clear the previous list
+  const freelancerContainer = document.getElementById("freelancers");
+  freelancerContainer.innerHTML = "";
 
   freelancers.forEach((freelancer) => {
-    const freelancerElement = document.createElement("div");
-    freelancerElement.textContent = `${freelancer.name}, ${freelancer.occupation} - $${freelancer.startingPrice}`;
-    freelancersList.appendChild(freelancerElement);
+    const row = document.createElement("tr");
+    row.innerHTML = `
+          <td>${freelancer.name}</td>
+          <td>${freelancer.occupation}</td>
+          <td>$${freelancer.price}</td>
+      `;
+    freelancerContainer.appendChild(row);
   });
+
+  updateAveragePrice();
 }
 
-// Function to calculate the average starting price
-function calculateAveragePrice() {
+function updateAveragePrice() {
   const total = freelancers.reduce(
-    (sum, freelancer) => sum + freelancer.startingPrice,
+    (sum, freelancer) => sum + freelancer.price,
     0
   );
-  return total / freelancers.length;
+  const average = (total / freelancers.length).toFixed(2);
+  document.getElementById(
+    "averagePrice"
+  ).textContent = `The average starting price is $${average}.`;
 }
 
-// Function to update the average price on the page
-function updateAveragePrice() {
-  const averagePrice = calculateAveragePrice();
-  document.getElementById("average-price").textContent =
-    averagePrice.toFixed(2);
-}
-
-// Function to generate a random freelancer
-function generateRandomFreelancer() {
+function addFreelancer() {
   const name = names[Math.floor(Math.random() * names.length)];
   const occupation =
     occupations[Math.floor(Math.random() * occupations.length)];
-  const startingPrice = Math.floor(Math.random() * 50) + 30; // Price between $30 and $80
-  return { name, occupation, startingPrice };
+  const price = Math.floor(Math.random() * 100) + 20;
+
+  freelancers.push({ name, occupation, price });
+  renderFreelancers();
 }
 
-// Function to add a new freelancer to the list
-function addFreelancer() {
-  const newFreelancer = generateRandomFreelancer();
-  freelancers.push(newFreelancer); // Add the new freelancer to the array
-  renderFreelancers(); // Re-render the freelancer list
-  updateAveragePrice(); // Update the average starting price
-}
+renderFreelancers();
 
-// Initialize the page with the current freelancers
-window.onload = function () {
-  renderFreelancers(); // Render initial freelancers (Alice and Bob)
-  updateAveragePrice(); // Set initial average price
-
-  // Set an interval to add a new freelancer every 3 seconds
-  setInterval(addFreelancer, 3000);
-};
+setInterval(addFreelancer, 3000);
